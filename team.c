@@ -63,6 +63,28 @@ int team_goals_conceded(Team *t) {
     return t->goals_conceded;
 }
 
+void team_record_result(Team *t, int goals_scored, int goals_conceded) {
+    // Os gols sempre entram; o resultado é decidido comparando os dois placares.
+    t->goals_scored += goals_scored;
+    t->goals_conceded += goals_conceded;
+
+    if (goals_scored > goals_conceded) {
+        t->wins++;
+    } else if (goals_scored == goals_conceded) {
+        t->draws++;
+    } else {
+        t->losses++;
+    }
+}
+
+int team_goal_diff(Team *t) {
+    return t->goals_scored - t->goals_conceded;
+}
+
+int team_points(Team *t) {
+    return 3 * t->wins + t->draws;
+}
+
 void team_free(Team *t) {
     if (t != NULL) {
         free(t->name);
