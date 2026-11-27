@@ -1,5 +1,4 @@
-// An ordered collection of teams. Which data structure stores them (dynamic vector or doubly
-// linked list) is chosen in config.mk; code that uses this interface works the same with either.
+// Uma coleção ordenada de times, implementada com lista duplamente encadeada.
 
 #ifndef TEAMLIST_H
 #define TEAMLIST_H
@@ -8,23 +7,40 @@
 
 typedef struct teamlist TeamList;
 
-// Returns a new empty collection.
+// Cria uma coleção vazia. Retorna NULL se faltar memória.
 TeamList *tl_create(void);
 
-// Appends the team t to the end of tl.
-// Ownership: tl becomes the owner of t (see tl_free).
+// Adiciona o time t ao final de tl.
+// Propriedade: tl passa a ser dona de t (ver tl_free).
 void tl_append(TeamList *tl, Team *t);
 
-// Returns the number of teams stored in tl.
+// Insere t em tl mantendo a lista ordenada pela classificação do campeonato (melhor
+//   primeiro): mais pontos, mais vitórias, maior saldo, mais gols marcados, menor id.
+// Requer: tl já ordenada por esse critério (ex.: construída só com tl_insert_sorted).
+// Propriedade: tl passa a ser dona de t (ver tl_free).
+// Custo: O(n).
+void tl_insert_sorted(TeamList *tl, Team *t);
+
+// Retorna o número de times em tl.
 int tl_size(TeamList *tl);
 
-// Returns the team at position i of tl, in insertion order.
-// Requires: 0 <= i < tl_size(tl).
-// Ownership: the team still belongs to tl.
+// Retorna o time na posição i de tl, na ordem da lista.
+// Requer: 0 <= i < tl_size(tl).
+// Propriedade: o time continua pertencendo a tl.
 Team *tl_get(TeamList *tl, int i);
 
-// Frees tl and every team stored in it.
-// Cost: O(n).
+// Retorna o time de tl com o id dado, ou NULL se não existir.
+// Propriedade: o time continua pertencendo a tl.
+// Custo: O(n).
+Team *tl_find(TeamList *tl, int id);
+
+// Libera tl e todos os times guardados nela.
+// Custo: O(n).
 void tl_free(TeamList *tl);
+
+// Libera apenas tl e seus nós, SEM liberar os times. Serve para uma lista cujos times
+//   também estão em outra lista (evita liberar o mesmo time duas vezes).
+// Custo: O(n).
+void tl_free_shallow(TeamList *tl);
 
 #endif
