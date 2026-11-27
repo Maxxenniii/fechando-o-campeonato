@@ -1,8 +1,10 @@
 # Fechando o Campeonato
 
-Projeto desenvolvido em linguagem C para o trabalho de Programação do Instituto Federal do Espírito Santo (IFES), Campus Serra.
+Este projeto implementa um sistema de apuração e classificação do Campeonato Computacional de Futebol utilizando a linguagem C. O programa realiza a leitura dos times e dos resultados das partidas armazenados em arquivos CSV, calcula as estatísticas de cada equipe, organiza a tabela de classificação e apresenta um resumo com os principais resultados do campeonato.
 
-O programa realiza a leitura dos arquivos CSV com os dados dos times e das partidas de um campeonato de futebol. A partir desses dados, calcula as estatísticas de cada equipe, organiza a tabela de classificação e apresenta um resumo com os principais resultados do campeonato.
+A implementação utiliza Tipos Abstratos de Dados (TADs), listas encadeadas e alocação dinâmica de memória para organizar e manipular as informações. Todo o processamento acontece automaticamente, sem interação com o usuário.
+
+---
 
 ## Integrantes
 
@@ -11,93 +13,70 @@ O programa realiza a leitura dos arquivos CSV com os dados dos times e das parti
 | Maxine Amorim Silva Gois | 20252bsi0305 |
 | Davi Terra Vieira da Silva | 20252bsi0097 |
 
-## Funcionalidades
+---
 
-- Leitura dos times a partir do arquivo `times.csv`.
-- Leitura das partidas a partir do arquivo `partidas.csv`.
-- Cálculo de vitórias, empates e derrotas.
-- Cálculo de gols marcados e gols sofridos.
-- Cálculo do saldo de gols e dos pontos ganhos.
-- Classificação dos times conforme os critérios de desempate.
-- Identificação do campeão ou líder do campeonato.
-- Identificação do melhor ataque e da melhor defesa.
-- Identificação da maior goleada.
-- Geração do arquivo `classificacao.csv` com a tabela final.
+## Estrutura do Repositório
 
-## Organização do projeto
-
-O projeto foi dividido em quatro TADs (Tipos Abstratos de Dados), além do programa principal:
-
-- **Team:** responsável pelos dados e pelas estatísticas de cada time.
-- **TeamList:** responsável pelo armazenamento e gerenciamento dos times por meio de uma lista duplamente encadeada.
-- **Match:** representa uma partida, armazenando os times envolvidos e os gols marcados.
-- **MatchList:** responsável pelo armazenamento e gerenciamento das partidas por meio de uma lista encadeada.
-- **main.c:** responsável por executar as etapas do programa, realizar a leitura dos arquivos, atualizar as estatísticas, organizar a classificação e gerar o relatório.
-
-## Critérios de classificação
-
-A classificação dos times segue os seguintes critérios, nesta ordem:
-
-1. Maior número de pontos ganhos (PG).
-2. Maior número de vitórias (V).
-3. Maior saldo de gols (S).
-4. Maior número de gols marcados (GM).
-5. Menor ID.
-
-A pontuação é calculada da seguinte forma:
-
-- Vitória: 3 pontos.
-- Empate: 1 ponto.
-- Derrota: 0 pontos.
-
-## Como executar
-
-É necessário ter o GCC e o Make instalados em um ambiente Linux.
-
-1. Clone o repositório:
-
-```bash
-git clone URL_DO_REPOSITORIO
+```text
+├── Makefile             # Automação da compilação
+├── README.md            # Documentação do projeto
+├── main.c               # Programa principal
+│
+├── team.c / team.h      # TAD de times e estatísticas
+├── teamlist.c / teamlist.h  # TAD de lista de times
+│
+├── match.c / match.h    # TAD de partidas
+├── matchlist.c / matchlist.h # TAD de lista de partidas
+│
+├── times.csv            # Dados dos times
+├── partidas.csv         # Resultados utilizados na execução
+├── partidas_vazio.csv   # Cenário sem partidas disputadas
+├── partidas_parcial.csv # Cenário com 20 partidas
+├── partidas_completo.csv # Cenário com 45 partidas
 ```
 
-2. Entre na pasta do projeto:
+### Sobre os arquivos
 
-```bash
-cd NOME_DA_PASTA
-```
+- **Makefile:** responsável pela compilação dos arquivos do projeto. Possui os seguintes comandos:
+  - `make`: compila o programa e gera o executável `campeonato`.
+  - `make run`: compila, se necessário, e executa o programa.
+  - `make clean`: remove os arquivos objeto, o executável e o arquivo `classificacao.csv`.
 
-3. Compile o programa:
+- **main.c:** contém o fluxo principal do programa. É responsável por carregar os dados dos arquivos CSV, apurar as estatísticas, organizar a classificação, imprimir o relatório e gerar o arquivo final.
 
-```bash
-make
-```
+- **team.c / team.h:** implementam o TAD `Team`, responsável por armazenar os dados e as estatísticas de cada equipe.
 
-4. Execute:
+- **teamlist.c / teamlist.h:** implementam o TAD `TeamList`, responsável pelo gerenciamento dos times utilizando uma lista duplamente encadeada.
 
-```bash
-./campeonato
-```
+- **match.c / match.h:** implementam o TAD `Match`, que representa uma partida e armazena seu identificador, os times envolvidos e os gols de cada equipe.
 
-O programa utiliza os arquivos `times.csv` e `partidas.csv`, que devem estar disponíveis no diretório esperado pela implementação.
+- **matchlist.c / matchlist.h:** implementam o TAD `MatchList`, responsável pelo armazenamento das partidas em uma lista encadeada.
 
-## Arquivos de saída
+- **times.csv:** contém os identificadores e nomes dos dez times participantes do campeonato.
 
-Ao finalizar a execução, o programa apresenta no terminal:
+- **partidas.csv:** contém os resultados das partidas que serão utilizados durante a execução.
 
-- Tabela de classificação dos times.
-- Quantidade de partidas disputadas.
-- Campeão ou líder do campeonato.
-- Melhor ataque.
-- Melhor defesa.
-- Maior goleada.
+- **partidas_vazio.csv, partidas_parcial.csv e partidas_completo.csv:** arquivos disponibilizados para testar diferentes situações do campeonato.
 
-Também é gerado o arquivo `classificacao.csv`, contendo a tabela de classificação organizada.
+---
 
-## Tecnologias utilizadas
+## TADs utilizados
 
-- Linguagem C.
-- GCC.
-- Make.
-- Arquivos CSV.
-- Listas encadeadas.
-- Alocação dinâmica de memória.
+### 1. Team
+
+O TAD `Team`, definido em `team.h` e implementado em `team.c`, representa cada equipe participante do campeonato.
+
+Sua estrutura armazena as seguintes informações:
+
+- `id`: identificador do time.
+- `name`: nome da equipe.
+- `wins`: quantidade de vitórias.
+- `draws`: quantidade de empates.
+- `losses`: quantidade de derrotas.
+- `goals_scored`: quantidade de gols marcados.
+- `goals_conceded`: quantidade de gols sofridos.
+
+Entre suas principais funções estão:
+
+- `team_create()`: cria um time com seu identificador e nome.
+- `team_record_result()`: registra o resultado de uma partida e atualiza
