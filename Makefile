@@ -1,42 +1,29 @@
-# Implementation choice (IMPL) lives in config.mk
-include config.mk
-
-# Compiler
+# Compilador e opções
 CC = gcc
+CFLAGS = -Wall -Wextra -std=c11
 
-# Compiler flags
-CFLAGS = -Wall
-
-# Source files: main.c never changes; only the TeamList implementation does
-SRCS = main.c team.c teamlist_$(IMPL).c
-
-# Object files
+# Arquivos-fonte, objetos e executável
+SRCS = main.c team.c teamlist.c match.c matchlist.c
 OBJS = $(SRCS:.c=.o)
+TARGET = campeonato
 
-# Executable name
-TARGET = team_ep
+.PHONY: all run clean
 
-# Phony targets
-.PHONY: all compile run clean
+# Alvo padrão: compila
+all: $(TARGET)
 
-# Default target (compile and run)
-all: compile run
-
-# Explicit compile target (produces the target program)
-compile: $(TARGET)
-
-# Run the executable
+# Compila (se preciso) e executa
 run: $(TARGET)
 	./$(TARGET)
 
-# Clean up (both implementations)
-clean:
-	rm -f *.o $(TARGET)
+# Liga os objetos no executável
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
-# Compile source files into object files
-%.o: %.c
+# Compila cada .c em .o; recompila se algum .h mudar
+%.o: %.c $(wildcard *.h)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link object files; relink whenever config.mk changes
-$(TARGET): $(OBJS) config.mk
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+# Remove arquivos gerados
+clean:
+	rm -f $(OBJS) $(TARGET) classificacao.csv
