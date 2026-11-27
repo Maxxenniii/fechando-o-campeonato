@@ -1,38 +1,49 @@
-// A football team: identification and accumulated stats. Standings (goal difference, points)
-// are not stored; they are always computed from the accessors below.
+// Um time de futebol: identificação e estatísticas acumuladas. Saldo de gols e pontos
+// não são armazenados; são sempre calculados a partir das estatísticas.
 
 #ifndef TEAM_H
 #define TEAM_H
 
 typedef struct team Team;
 
-// Returns a new team with the given id and name, and the 5 stats (wins, draws, losses,
-//   goals_scored, goals_conceded) set to zero.
-// Ownership: the caller (or the collection that stores it) frees it with team_free.
+// Cria um time com o id e o nome dados; as 5 estatísticas (vitórias, empates, derrotas,
+//   gols marcados, gols sofridos) começam em zero.
+// Retorna NULL se faltar memória.
+// Propriedade: quem recebe o time (ou a lista que o guarda) o libera com team_free.
 Team *team_create(int id, const char *name);
 
-// Returns the id of t.
+// Retorna o id do time t.
 int team_id(Team *t);
 
-// Returns the name of t (read-only).
+// Retorna o nome do time t (somente leitura).
 const char *team_name(Team *t);
 
-// Returns the number of wins of t.
+// Retorna o número de vitórias de t.
 int team_wins(Team *t);
 
-// Returns the number of draws of t.
+// Retorna o número de empates de t.
 int team_draws(Team *t);
 
-// Returns the number of losses of t.
+// Retorna o número de derrotas de t.
 int team_losses(Team *t);
 
-// Returns the number of goals scored by t.
+// Retorna os gols marcados por t.
 int team_goals_scored(Team *t);
 
-// Returns the number of goals conceded by t.
+// Retorna os gols sofridos por t.
 int team_goals_conceded(Team *t);
 
-// Frees the team t.
+// Registra o resultado de uma partida de t: soma os gols e conta vitória, empate ou
+//   derrota conforme quem marcou mais.
+void team_record_result(Team *t, int goals_scored, int goals_conceded);
+
+// Retorna o saldo de gols de t (marcados - sofridos).
+int team_goal_diff(Team *t);
+
+// Retorna os pontos ganhos de t (3 por vitória + 1 por empate).
+int team_points(Team *t);
+
+// Libera o time t.
 void team_free(Team *t);
 
 #endif
